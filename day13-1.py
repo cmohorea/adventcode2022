@@ -50,8 +50,6 @@ def compare_lists (l1, l2):
     else:
         return CONT
 
-
-
 with open(TXTFILE, "r") as f:
     while True:
         line1 = f.readline()
