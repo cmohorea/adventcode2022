@@ -1,0 +1,1 @@
+Coding exercises to solve https://adventofcode.com/2022
