@@ -1,6 +1,8 @@
 INFINITY = 9999999
 OUT_OF_RANGE = "-"
 UNDEFINED = "."
+EMPTY = " "
+NONEMPTY = "#"
 
 class AdventMap ():
 
@@ -39,6 +41,20 @@ class AdventMap ():
             self.map[y] = {}
         self.map[y][x] = value
 
+    def draw_line (self, px, py, x, y, item = NONEMPTY):
+
+        if px == x:    #Y line
+            step = (y - py) // abs (y - py)
+            for yy in range (py, y + step, step):
+                self.set_item (x, yy, item)
+        elif py == y:    #X line
+            step = (x - px) // abs (x - px)
+            for xx in range (px, x + step, step):
+                self.set_item (xx, y, item)
+        else:
+            # cannot draw diagonals
+            return
+    
     def set_item_safe (self, x, y, value):
         if x in range (self.minx, self.maxx + 1) and y in range (self.miny, self.maxy + 1):
             self.set_item (x, y, value)
@@ -48,7 +64,7 @@ class AdventMap ():
 
     def print_map_abs (self, x1, y1, x2, y2):
         print(f"X: {x1:3}:{x2}")
-        for y in range (y1,y2+1):
+        for y in range (y2, y1-1, -1):
             print(f"{y:3}: ", end="")
             for x in range (x1, x2+1):
                 print (self.get_item(x,y), end="")
@@ -56,8 +72,10 @@ class AdventMap ():
         print()
 
 
-
+if __name__ == '__main__':
+    exit(0)
 # mymap = AdventMap ()
 # mymap.set_item(1,1,"*")
 # mymap.set_item(10,10,"*")
 # mymap.print_map()
+
