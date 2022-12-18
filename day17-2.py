@@ -1,0 +1,104 @@
+import map
+from tetris import Tetris
+
+TXTFILE = "day17.txt"
+
+CAVE_WIDTH = 7
+pattern_offset = 0
+figure_offset = 0
+current_piece = 0
+figures = [
+    ["@@@@"],
+    [" @ ","@@@"," @ "],
+    ["  @","  @","@@@"],
+    ["@ ","@","@","@"],
+    ["@@","@@"],
+]
+
+# -------------------
+
+def next_pattern():
+    global pattern_offset
+    res = pattern[pattern_offset]
+    pattern_offset = (pattern_offset + 1) % len (pattern)
+    return res
+
+def next_figure():
+    global figure_offset
+    res = figures[figure_offset]
+    figure_offset = (figure_offset + 1) % len (figures)
+    return res
+
+def drop_next_piece (cave, height):
+    global current_piece
+
+    current_piece += 1
+    # return cave height
+    fig = Tetris (cave, 0, 0, next_figure())
+    newh = height + fig.sizey + 3
+    fig.move_to (3, newh)
+    fig.show_on_map ()
+    cave.draw_line (0,height, 0, newh,"|")
+    cave.draw_line (8,height, 8, newh,"|")
+    # cave.print_map()
+
+    while True:
+        dir = next_pattern()
+        # print (dir)
+
+        if dir == "<":
+            if fig.can_move_left():
+                fig.move_left()
+        elif dir == ">":
+            if fig.can_move_right():
+                fig.move_right()
+        else:
+            0/0
+
+        if fig.can_move_down():
+            fig.move_down()
+        else:
+            # cave.print_map()
+            break
+        
+        # cave.print_map()
+    
+    # if current_piece > 20:
+    #     tgt = cave.get_line (28)
+    #     for y in range (29, cave.maxy):
+    #         ln = cave.get_line (y)
+    #         if (ln == tgt) and (cave.get_line (29)):
+    #             print (f"Fig# {current_piece}, line {y} == 28")
+    newh = fig.y if fig.y > height else height
+    del fig
+    return newh
+
+# -------------
+with open(TXTFILE, "r") as f:
+    lines = f.readlines()
+
+pattern = lines [0].strip()
+
+repeat = len (pattern) * len (figures)
+repeat = 1725
+
+cave = map.AdventMap ()
+cave.draw_line (0,0, CAVE_WIDTH+1,0,"=")
+
+height = 0
+for _ in range (5050):
+    # print (_)
+    height = drop_next_piece (cave, height)
+    # if current_piece % repeat == 312:
+    #     print (f"After {current_piece} map height is: {height}")
+    #     cave.print_top()
+
+# cave.print_top()
+
+# cave.print_map()
+    # print("-"*40)
+print (height)
+# cave.print_map()
+
+
+#repeat pattern: repeats every 1725 drops, starting with 1600
